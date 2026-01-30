@@ -1,5 +1,5 @@
 def format_structure(
-    source,
+    source_object,
     extra_line_depth: int = 0,
     opener_in_next_line: bool = True,
     add_space_to_assignments: bool = True,
@@ -14,14 +14,14 @@ def format_structure(
     if extra_line_depth < 0:
         raise ValueError('extra_line_depth must be equal or greater than 0')
     
-    OPENERS = {'{', '[', '(', '<'}
-    CLOSERS = {'}', ']', ')', '>'}
+    OPENERS = {'{', '[', '('}
+    CLOSERS = {'}', ']', ')'}
     QUOTES = {"'", '"'}
     indent_level = 0
     string_opener = None
     last_was_escape = False
     buffer = []
-    source_text = source if isinstance(source, str) else str(source)
+    source_text = source_object if isinstance(source_object, str) else str(source_object)
     i = -1
     
     while i < len(source_text)-1:
@@ -43,15 +43,21 @@ def format_structure(
             continue
 
         if char in OPENERS:
-            stripped = source_text[i+1:].strip()
-            if stripped and stripped[0] in CLOSERS:
+            next_char = None
+            next_index = i
+            for j in range(i + 1, len(source_text)):
+                if not source_text[j].isspace():
+                    next_char = source_text[j]
+                    next_index = j
+                    break
+            if next_char in CLOSERS:
                 if expand_empty_objects:
                     if opener_in_next_line and buffer and not buffer[-1].endswith(indent_string):
                         buffer.append(newline(1))
-                    buffer.append(char + newline() + stripped[0])
+                    buffer.append(char + newline() + next_char)
                 else:
-                    buffer.append(char + stripped[0])
-                i += source_text[i+1:].find(stripped[0]) + 1
+                    buffer.append(char + next_char)
+                i = next_index
             else:
                 if opener_in_next_line and buffer and not buffer[-1].endswith(indent_string):
                     buffer.append(newline(1))

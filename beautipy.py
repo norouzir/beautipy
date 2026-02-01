@@ -1,18 +1,19 @@
-def format_structure(
-    source_object,
-    extra_line_depth: int = 0,
-    opener_in_next_line: bool = True,
-    add_space_to_assignments: bool = True,
-    expand_empty_objects: bool = False,
-    indent_string: str = '    '
+def beautify(
+    obj,
+    *,
+    extra_newline_depth: int = 0,
+    opener_on_next_line: bool = True,
+    space_around_operators: bool = True,
+    expand_empty: bool = False,
+    indent: str = '    '
 ) -> str:
 
     def newline(count=0):
-        count = count if count else 2 if indent_level<extra_line_depth else 1
-        return count * ('\n' + indent_level * indent_string)
+        count = count if count else 2 if indent_level<extra_newline_depth else 1
+        return count * ('\n' + indent_level * indent)
 
-    if extra_line_depth < 0:
-        raise ValueError('extra_line_depth must be equal or greater than 0')
+    if extra_newline_depth < 0:
+        raise ValueError('extra_newline_depth must be equal or greater than 0')
     
     OPENERS = {'{', '[', '('}
     CLOSERS = {'}', ']', ')'}
@@ -21,10 +22,10 @@ def format_structure(
     string_opener = None
     last_was_escape = False
     buffer = []
-    source_text = source_object if isinstance(source_object, str) else str(source_object)
+    source_text = obj if isinstance(obj, str) else str(obj)
     i = -1
     
-    while i < len(source_text)-1:
+    while i < len(source_text) - 1:
         i += 1
         char = source_text[i]
 
@@ -51,15 +52,15 @@ def format_structure(
                     next_index = j
                     break
             if next_char in CLOSERS:
-                if expand_empty_objects:
-                    if opener_in_next_line and buffer and not buffer[-1].endswith(indent_string):
+                if expand_empty:
+                    if opener_on_next_line and buffer and not buffer[-1].endswith(indent):
                         buffer.append(newline(1))
                     buffer.append(char + newline() + next_char)
                 else:
                     buffer.append(char + next_char)
                 i = next_index
             else:
-                if opener_in_next_line and buffer and not buffer[-1].endswith(indent_string):
+                if opener_on_next_line and buffer and not buffer[-1].endswith(indent):
                     buffer.append(newline(1))
                 indent_level += 1
                 buffer.append((char + newline()))
@@ -71,16 +72,16 @@ def format_structure(
         
         if char in CLOSERS:
             buffer.append(newline())
-            buffer[-1] = buffer[-1].removesuffix(indent_string)
+            buffer[-1] = buffer[-1].removesuffix(indent)
             indent_level = max(indent_level - 1, 0)
             buffer.append(char)
             continue
         
-        if char == '=' and add_space_to_assignments:
+        if char == '=' and space_around_operators:
             buffer.append(' = ')
             continue
         
-        if char == ':' and add_space_to_assignments:
+        if char == ':' and space_around_operators:
             buffer.append(': ')
             continue
         

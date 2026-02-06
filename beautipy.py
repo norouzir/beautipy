@@ -7,6 +7,54 @@ def beautify(
     expand_empty: bool = False,
     indent: str = '    '
 ) -> str:
+    """Format a data structure into a human-readable string.
+
+    Prettifies the `str()` representation of an object by applying indentation,
+    line breaks, and spacing rules, making deeply nested structures easier to
+    read and understand.
+
+    Args:
+        obj: The object to format. If not a string, `str(obj)` is used internally.
+        extra_newline_depth: Number of nesting levels that receive an extra newline.
+            Must be `>= 0`. Defaults to `0`.
+        opener_on_next_line: If True, opening characters (`{`, `[`, `(`)
+            are placed on the next line. Defaults to `True`.
+        space_around_operators: If True, spaces are added around `=` and `:`
+            (e.g., `key = value` instead of `key=value`). Defaults to `True`.
+        expand_empty: If True, empty structures like `{}`
+            or `[]` are expanded into multiple lines. Defaults to `False`.
+        indent: String used for each level of indentation.
+            Defaults to `    ` (4 spaces).
+
+    Returns:
+        The formatted string representation of the input object.
+
+    Raises:
+        ValueError: If `extra_newline_depth` is negative.
+
+    Examples:
+        >>> data = ['Mango','Cherry']
+        >>> print(beautify(data))
+        [
+            'Mango',
+            'Cherry'
+        ]
+        >>> # non-standard structured text (see Notes)
+        >>> data = 'Error: {code:500,msg:"Not found"}'
+        >>> print(beautify(data, opener_on_next_line=False))
+        Error: {
+            code: 500,
+            msg: "Not found"
+        }
+
+    Notes:
+        This function is not a parser or validator and does not check
+        syntactic correctness of the input or output.
+        Formatting is applied purely at the textual level, based on characters,
+        without semantic understanding of the input structure.
+        As a result, the function can produce reasonable output even for
+        non-standard or malformed syntax (see Examples).
+    """
 
     def newline(count=0):
         count = count if count else 2 if indent_level<extra_newline_depth else 1

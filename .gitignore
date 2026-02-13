@@ -1,5 +1,6 @@
 # Python-generated files
 __pycache__/
+.pytest_cache/
 *.py[oc]
 build/
 dist/
@@ -8,5 +9,3 @@ wheels/
 
 # Virtual environments
 .venv
-
-scratch/

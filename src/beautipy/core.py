@@ -1,5 +1,12 @@
+"""Core formatting logic."""
+
+_OPENERS = {'{', '[', '('}
+_CLOSERS = {'}', ']', ')'}
+_QUOTES = {"'", '"'}
+
+
 def beautify(
-    obj,
+    obj: object,
     *,
     extra_newline_depth: int = 0,
     opener_on_next_line: bool = True,
@@ -57,15 +64,12 @@ def beautify(
     """
 
     def newline(count=0):
-        count = count if count else 2 if indent_level<extra_newline_depth else 1
+        count = count if count else 2 if indent_level < extra_newline_depth else 1
         return count * ('\n' + indent_level * indent)
 
     if extra_newline_depth < 0:
-        raise ValueError('extra_newline_depth must be equal or greater than 0')
-    
-    OPENERS = {'{', '[', '('}
-    CLOSERS = {'}', ']', ')'}
-    QUOTES = {"'", '"'}
+        raise ValueError('extra_newline_depth must be greater than or equal to 0')
+
     indent_level = 0
     string_opener = None
     last_was_escape = False
@@ -91,7 +95,7 @@ def beautify(
         if char.isspace():
             continue
 
-        if char in OPENERS:
+        if char in _OPENERS:
             next_char = None
             next_index = i
             for j in range(i + 1, len(source_text)):
@@ -99,7 +103,7 @@ def beautify(
                     next_char = source_text[j]
                     next_index = j
                     break
-            if next_char in CLOSERS:
+            if next_char in _CLOSERS:
                 if expand_empty:
                     if opener_on_next_line and buffer and not buffer[-1].endswith(indent):
                         buffer.append(newline(1))
@@ -118,9 +122,10 @@ def beautify(
             buffer.append(char + newline())
             continue
         
-        if char in CLOSERS:
+        if char in _CLOSERS:
             buffer.append(newline())
-            buffer[-1] = buffer[-1].removesuffix(indent)
+            if buffer and buffer[-1].endswith(indent):
+                buffer[-1] = buffer[-1][:-len(indent)]
             indent_level = max(indent_level - 1, 0)
             buffer.append(char)
             continue
@@ -133,7 +138,7 @@ def beautify(
             buffer.append(': ')
             continue
         
-        if char in QUOTES:
+        if char in _QUOTES:
             string_opener = char
             buffer.append(char)
             continue

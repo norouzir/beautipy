@@ -8,9 +8,9 @@ _QUOTES = {"'", '"'}
 def beautify(
     obj: object,
     *,
-    extra_newline_depth: int = 0,
-    opener_on_next_line: bool = True,
-    space_around_operators: bool = True,
+    blank_line_depth: int = 0,
+    opener_same_line: bool = False,
+    compact_operators: bool = False,
     expand_empty: bool = False,
     indent: str = '    '
 ) -> str:
@@ -22,12 +22,12 @@ def beautify(
 
     Args:
         obj: The object to format. If not a string, `str(obj)` is used internally.
-        extra_newline_depth: Number of nesting levels that receive an extra newline.
+        blank_line_depth: Number of nesting levels that receive a blank line.
             Must be `>= 0`. Defaults to `0`.
-        opener_on_next_line: If True, opening characters (`{`, `[`, `(`)
-            are placed on the next line. Defaults to `True`.
-        space_around_operators: If True, spaces are added around `=` and `:`
-            (e.g., `key = value` instead of `key=value`). Defaults to `True`.
+        opener_same_line: If True, opening characters (`{`, `[`, `(`)
+            stay on the same line. Defaults to `False`.
+        compact_operators: If True, no spaces around `=` and `:`
+            (e.g., `key=value` instead of `key = value`). Defaults to `False`.
         expand_empty: If True, empty structures like `{}`
             or `[]` are expanded into multiple lines. Defaults to `False`.
         indent: String used for each level of indentation.
@@ -37,7 +37,7 @@ def beautify(
         The formatted string representation of the input object.
 
     Raises:
-        ValueError: If `extra_newline_depth` is negative.
+        ValueError: If `blank_line_depth` is negative.
 
     Examples:
         >>> data = ['Mango','Cherry']
@@ -48,7 +48,7 @@ def beautify(
         ]
         >>> # non-standard structured text (see Notes)
         >>> data = 'Error: {code:500,msg:"Not found"}'
-        >>> print(beautify(data, opener_on_next_line=False))
+        >>> print(beautify(data, opener_same_line=True))
         Error: {
             code: 500,
             msg: "Not found"
@@ -64,11 +64,11 @@ def beautify(
     """
 
     def newline(count=0):
-        count = count if count else 2 if indent_level < extra_newline_depth else 1
+        count = count if count else 2 if indent_level < blank_line_depth else 1
         return count * ('\n' + indent_level * indent)
 
-    if extra_newline_depth < 0:
-        raise ValueError('extra_newline_depth must be greater than or equal to 0')
+    if blank_line_depth < 0:
+        raise ValueError('blank_line_depth must be greater than or equal to 0')
 
     indent_level = 0
     string_opener = None
@@ -105,14 +105,14 @@ def beautify(
                     break
             if next_char in _CLOSERS:
                 if expand_empty:
-                    if opener_on_next_line and buffer and not buffer[-1].endswith(indent):
+                    if not opener_same_line and buffer and not buffer[-1].endswith(indent):
                         buffer.append(newline(1))
                     buffer.append(char + newline() + next_char)
                 else:
                     buffer.append(char + next_char)
                 i = next_index
             else:
-                if opener_on_next_line and buffer and not buffer[-1].endswith(indent):
+                if not opener_same_line and buffer and not buffer[-1].endswith(indent):
                     buffer.append(newline(1))
                 indent_level += 1
                 buffer.append((char + newline()))
@@ -130,11 +130,11 @@ def beautify(
             buffer.append(char)
             continue
         
-        if char == '=' and space_around_operators:
+        if char == '=' and not compact_operators:
             buffer.append(' = ')
             continue
         
-        if char == ':' and space_around_operators:
+        if char == ':' and not compact_operators:
             buffer.append(': ')
             continue
         

@@ -14,7 +14,7 @@ class TestParseArgs:
     def test_no_args_defaults(self) -> None:
         ns = parse_args([])
         assert ns.text == []
-        assert ns.extra_newline_depth == 0
+        assert ns.blank_line_depth == 0
         assert ns.opener_same_line is False
         assert ns.compact_operators is False
         assert ns.expand_empty is False
@@ -28,11 +28,11 @@ class TestParseArgs:
         ns = parse_args(["{}", "and", "[]"])
         assert ns.text == ["{}", "and", "[]"]
 
-    def test_extra_newline_depth(self) -> None:
-        ns = parse_args(["-x", "2"])
-        assert ns.extra_newline_depth == 2
-        ns = parse_args(["--extra-newline-depth", "1"])
-        assert ns.extra_newline_depth == 1
+    def test_blank_line_depth(self) -> None:
+        ns = parse_args(["-b", "2"])
+        assert ns.blank_line_depth == 2
+        ns = parse_args(["--blank-line-depth", "1"])
+        assert ns.blank_line_depth == 1
 
     def test_opener_same_line(self) -> None:
         ns = parse_args(["-s"])
@@ -59,10 +59,10 @@ class TestParseArgs:
         assert ns.indent == "  "
 
     def test_combined_flags(self) -> None:
-        ns = parse_args(["-e", "-o", "-x", "1", "{}"])
+        ns = parse_args(["-e", "-o", "-b", "1", "{}"])
         assert ns.expand_empty is True
         assert ns.compact_operators is True
-        assert ns.extra_newline_depth == 1
+        assert ns.blank_line_depth == 1
         assert ns.text == ["{}"]
 
 
@@ -120,8 +120,8 @@ class TestMain:
         assert "  " in out
         assert err == ""
 
-    def test_main_extra_newline_depth(self, capsys: pytest.CaptureFixture[str]) -> None:
-        code = main(["-x", "0", '{"a": 1}'])
+    def test_main_blank_line_depth(self, capsys: pytest.CaptureFixture[str]) -> None:
+        code = main(["-b", "0", '{"a": 1}'])
         out, err = capsys.readouterr()
         assert code == EXIT_OK
         assert "a" in out and "1" in out
@@ -152,6 +152,7 @@ class TestMain:
         class FakeTTY:
             def isatty(self) -> bool:
                 return True
+
             def read(self) -> str:
                 return ""
 
@@ -164,7 +165,7 @@ class TestMain:
     def test_main_returns_error_on_value_error(
         self, capsys: pytest.CaptureFixture[str]
     ) -> None:
-        code = main(["-x", "-1", "{}"])
+        code = main(["-b", "-1", "{}"])
         _, err = capsys.readouterr()
         assert code == EXIT_ERROR
-        assert "extra_newline_depth" in err
+        assert "blank_line_depth" in err

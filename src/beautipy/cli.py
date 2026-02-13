@@ -7,6 +7,7 @@ from importlib.metadata import PackageNotFoundError, version
 
 from beautipy import beautify
 
+
 class CustomFormatter(
     argparse.RawDescriptionHelpFormatter,
     argparse.ArgumentDefaultsHelpFormatter
@@ -21,7 +22,7 @@ EXAMPLES = """
 examples:
   beautipy '{"a": 1, "b": [2, 3]}'
   echo '[1, 2, 3]' | beautipy
-  cat messy.json | beautipy -x 1 -i "  "
+  cat messy.json | beautipy -b 1 -i "  "
   beautipy -s -o -e 'key:value' > formatted.txt
 """
 
@@ -57,12 +58,12 @@ def parse_args(args: list[str] | None = None) -> argparse.Namespace:
         help="Input text (concatenated). If omitted, read from stdin.",
     )
     parser.add_argument(
-        "-x",
-        "--extra-newline-depth",
+        "-b",
+        "--blank-line-depth",
         type=int,
         default=0,
         metavar="N",
-        help="Number of nesting levels that receive an extra newline",
+        help="Number of nesting levels that receive a blank line",
     )
     parser.add_argument(
         "-s",
@@ -128,9 +129,9 @@ def main(args: list[str] | None = None) -> int:
     try:
         result = beautify(
             text,
-            extra_newline_depth=ns.extra_newline_depth,
-            opener_on_next_line=not ns.opener_same_line,
-            space_around_operators=not ns.compact_operators,
+            blank_line_depth=ns.blank_line_depth,
+            opener_same_line=ns.opener_same_line,
+            compact_operators=ns.compact_operators,
             expand_empty=ns.expand_empty,
             indent=ns.indent,
         )

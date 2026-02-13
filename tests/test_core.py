@@ -48,14 +48,14 @@ def test_empty_list_expand_empty() -> None:
     assert result != "[]"
 
 
-def test_space_around_operators_false() -> None:
-    result = beautify({"a": 1}, space_around_operators=False)
-    assert "'a':1" in result
-
-
-def test_space_around_operators_true() -> None:
-    result = beautify({"a": 1}, space_around_operators=True)
+def test_compact_operators_false() -> None:
+    result = beautify({"a": 1}, compact_operators=False)
     assert "'a': 1" in result
+
+
+def test_compact_operators_true() -> None:
+    result = beautify({"a": 1}, compact_operators=True)
+    assert "'a':1" in result
 
 
 def test_custom_indent() -> None:
@@ -75,9 +75,9 @@ def test_string_input() -> None:
     assert '"x": 1' in result
 
 
-def test_extra_newline_depth_raises_on_negative() -> None:
-    with pytest.raises(ValueError, match="extra_newline_depth"):
-        beautify({}, extra_newline_depth=-1)
+def test_blank_line_depth_raises_on_negative() -> None:
+    with pytest.raises(ValueError, match="blank_line_depth"):
+        beautify({}, blank_line_depth=-1)
 
 
 def test_quoted_strings_preserved() -> None:
@@ -92,8 +92,8 @@ def test_tuple_formatting() -> None:
     assert "3" in result
 
 
-def test_opener_on_next_line_false() -> None:
-    result = beautify({"a": 1}, opener_on_next_line=False)
+def test_opener_same_line_true() -> None:
+    result = beautify({"a": 1}, opener_same_line=True)
     assert result.startswith("{") or "'a'" in result
 
 

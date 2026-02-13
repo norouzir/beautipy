@@ -11,7 +11,7 @@ def main() -> None:
         input_text = file.read()
 
     # Format it
-    result = beautify(input_text, extra_newline_depth=3)
+    result = beautify(input_text, blank_line_depth=3)
 
     # Write output
     with open("output.txt", "w", encoding="utf-8") as file:

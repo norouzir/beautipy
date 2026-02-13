@@ -84,9 +84,9 @@ from beautipy import beautify
 beautify(
     obj: object,
     *,
-    extra_newline_depth: int = 0,
-    opener_on_next_line: bool = True,
-    space_around_operators: bool = True,
+    blank_line_depth: int = 0,
+    opener_same_line: bool = False,
+    compact_operators: bool = False,
     expand_empty: bool = False,
     indent: str = '    '
 ) -> str
@@ -95,13 +95,13 @@ beautify(
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `obj` | `object` | - | Object to format. If not a string, `str(obj)` is used. |
-| `extra_newline_depth` | `int` | `0` | Number of initial nesting levels that get an extra blank line. |
-| `opener_on_next_line` | `bool` | `True` | Place `{`, `[`, `(` on the next line. |
-| `space_around_operators` | `bool` | `True` | Add spaces around `=` and `:`. |
+| `blank_line_depth` | `int` | `0` | Number of initial nesting levels that get a blank line. |
+| `opener_same_line` | `bool` | `False` | Keep `{`, `[`, `(` on the same line. |
+| `compact_operators` | `bool` | `False` | Omit spaces around `=` and `:`. |
 | `expand_empty` | `bool` | `False` | Expand empty structures (e.g. `{}`) to multiple lines. |
 | `indent` | `str` | `'    '` | Indentation string (4 spaces by default). |
 
-**Raises:** `ValueError` if `extra_newline_depth < 0`.
+**Raises:** `ValueError` if `blank_line_depth < 0`.
 
 ### Command Line
 
@@ -123,7 +123,7 @@ beautipy --indent '\t' -s '{key:value}'
 
 #### Options
 
-- `-x`, `--extra-newline-depth N`: Add extra newlines at depth N. Default is `0`.
+- `-b`, `--blank-line-depth N`: Add blank lines at depth N. Default is `0`.
 - `-s`, `--opener-same-line`: Keep opening brackets inline.
 - `-o`, `--compact-operators`: Do not add spaces around `=` and `:`.
 - `-e`, `--expand-empty`: Expand empty structures (e.g. `[]`).

@@ -7,21 +7,6 @@
 A lightweight pretty-printer for complex, nested data structures and structured text.
 Improves readability by adding indentation and line breaks.
 
-## Contents
-
-- [Features](#features)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Usage](#usage)
-  - [Python API](#python-api)
-  - [Command Line](#command-line)
-- [Non-standard Structured Text](#non-standard-structured-text)
-- [How It Works](#how-it-works)
-- [Notes](#notes)
-- [Contributing](#contributing)
-- [License](#license)
-- [Links](#links)
-
 ## Features
 
 - Works with any object via its `str()` representation
@@ -118,7 +103,7 @@ echo '[1,2,3]' | beautipy
 beautipy '{"key":"value"}'
 
 # Multiple options
-beautipy --indent '\t' -s '{key:value}'
+beautipy --indent '  ' -s '{key:value}'
 ```
 
 #### Options

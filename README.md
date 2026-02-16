@@ -103,7 +103,7 @@ echo '[1,2,3]' | beautipy
 beautipy '{"key":"value"}'
 
 # Multiple options
-beautipy --indent '  ' -s '{key:value}'
+beautipy --indent '  ' -b 2 -s '{k1:[v11,v12], k2:[v21,v22]}'
 ```
 
 #### Options

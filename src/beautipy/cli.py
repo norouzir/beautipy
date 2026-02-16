@@ -23,7 +23,7 @@ examples:
   beautipy '{"a": 1, "b": [2, 3]}'
   echo '[1, 2, 3]' | beautipy
   cat messy.json | beautipy -b 1 -i "  "
-  beautipy -s -o -e 'key:value' > formatted.txt
+  beautipy -o '{"key":"value"}' > formatted.txt
 """
 
 

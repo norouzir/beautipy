@@ -139,11 +139,11 @@ Arya
 ]
 ```
 
-More usage examples can be found in the [examples/](examples/) directory:
+More usage examples can be found in the [examples/](https://github.com/norouzir/beautipy/tree/master/examples) directory:
 
-- [txt/](examples/txt/)
-- [json/](examples/json/)
-- [options.py](examples/options.py)
+- [txt/](https://github.com/norouzir/beautipy/tree/master/examples/txt)
+- [json/](https://github.com/norouzir/beautipy/tree/master/examples/json)
+- [options.py](https://github.com/norouzir/beautipy/blob/master/examples/options.py)
 
 ## How It Works
 
@@ -179,7 +179,7 @@ Please ensure:
 ## License
 
 MIT License — free to use, modify, and distribute.
-See the [LICENSE](LICENSE) file for details.
+See the [LICENSE](https://github.com/norouzir/beautipy/blob/master/LICENSE) file for details.
 
 ## Links
 
